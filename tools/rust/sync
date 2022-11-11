@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+CARGO_BAZEL_REPIN=1 bazel sync --only=crate_index
