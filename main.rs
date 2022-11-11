@@ -1,5 +1,5 @@
 use std::env;
-use serde_derive::Deserialize;
+use serde::Deserialize;
 use toml::Value;
 use std::path::PathBuf;
 use clap::Parser;
@@ -31,9 +31,11 @@ async fn main() {
     let contents = tokio::fs::read_to_string(&args.config)
         .await
         .unwrap_or_else(|why| {
-            panic!("Failed to read {}: {:?}", args.config.as_str(), why);
+            panic!("Failed to read {}: {:?}", args.config.as_os_str().to_str().unwrap(), why);
         });
-    let config = toml::from_str(&contents);
+    let config: Config = toml::from_str(&contents).unwrap_or_else(|why| {
+         panic!("Failed to parse TOML file {}: {:?}", args.config.as_os_str().to_str().unwrap(), why);
+    });
 
     let source_dir = env::var("BUILD_WORKSPACE_DIRECTORY").unwrap_or(".".to_owned());
 }

@@ -8,6 +8,7 @@ rust_binary(
         "@crate_index//:clap",
         "@crate_index//:git2",
         "@crate_index//:toml",
+        "@crate_index//:serde",
     ],
 )
 
