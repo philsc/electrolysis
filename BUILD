@@ -11,4 +11,3 @@ rust_binary(
         "@crate_index//:serde",
     ],
 )
-
