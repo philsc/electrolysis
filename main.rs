@@ -28,11 +28,12 @@ struct Linter {
 fn get_changed_files(path: &PathBuf) -> Result<Vec<PathBuf>, git2::Error> {
    let repo = git2::Repository::open(path)?;
    let prev_head = repo.revparse_single("HEAD^")?;
-   let diff = repo.diff_tree_to_workdir(prev_head.as_tree(), None)?;
+   let tree = repo.find_tree(prev_head.as_commit().unwrap().tree_id())?;
+   let mut diff_options = git2::DiffOptions::new();
+   let diff = repo.diff_tree_to_workdir(Some(&tree), Some(&mut diff_options))?;
 
    let mut result = Vec::new();
    for delta in diff.deltas().into_iter() {
-      println!("got diff");
       let Some(file) = delta.new_file().path() else {
          continue;
       };
